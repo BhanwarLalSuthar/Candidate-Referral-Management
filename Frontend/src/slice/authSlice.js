@@ -4,7 +4,7 @@ import candidateService from '../api/candidateService';
 // Thunks
 export const registerUser = createAsyncThunk(
   'auth/register',
-  async (userData, thunkAPI) => {
+  async (userData, ) => {
     const response = await candidateService.register(userData);
     return response.data;
   }
@@ -12,7 +12,7 @@ export const registerUser = createAsyncThunk(
 
 export const loginUser = createAsyncThunk(
   'auth/login',
-  async (credentials, thunkAPI) => {
+  async (credentials, ) => {
     const response = await candidateService.login(credentials);
     return response.data;
   }
@@ -20,7 +20,12 @@ export const loginUser = createAsyncThunk(
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState: { token: null, user: null, status: 'idle', error: null },
+ initialState: { 
+  token: localStorage.getItem('token') || null,
+  user: null,
+  status: 'idle',
+  error: null 
+},
   reducers: {
     logout: (state) => {
       state.token = null;
@@ -29,16 +34,22 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(registerUser.fulfilled, (state, action) => {
-        state.token = action.payload.token;
-        state.user = action.payload.user;
-        state.status = 'succeeded';
-      })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.token = action.payload.token;
-        state.user = action.payload.user;
-        state.status = 'succeeded';
-      })
+        .addCase(registerUser.fulfilled, (state, action) => {
+          state.token = action.payload.token;
+          state.user = action.payload.user;
+          state.status = 'succeeded';
+          localStorage.setItem('token', action.payload.token);
+        })
+        .addCase(loginUser.fulfilled, (state, action) => {
+          state.token = action.payload.token;
+          state.user = action.payload.user;
+          state.status = 'succeeded';
+          localStorage.setItem('token', action.payload.token);
+        })
+        .addCase(logout, (state) => {
+          localStorage.removeItem('token');
+        })
+    
       .addMatcher(
         (action) => action.type.endsWith('/pending'),
         (state) => { state.status = 'loading'; }

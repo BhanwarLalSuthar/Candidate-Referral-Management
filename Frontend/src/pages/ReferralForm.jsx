@@ -27,13 +27,15 @@ export default function ReferralForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+   
     const formData = new FormData();
+    
     formData.append('name', form.name);
     formData.append('email', form.email);
     formData.append('phone', form.phone);
     formData.append('jobTitle', form.jobTitle);
-    formData.append('resume', form.resume);
-
+    formData.append('file', form.resume);
+     console.log(formData)
     dispatch(referCandidate(formData)).then(() => {
       navigate('/');
     });

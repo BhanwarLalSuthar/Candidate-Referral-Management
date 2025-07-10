@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE = import.meta.REACT_APP_API_URL || 'http://localhost:5000';
+const API_BASE = "https://candidate-referral-management-1.onrender.com" ;
+console.log(API_BASE)
 
 // Create axios instance
 const api = axios.create({
